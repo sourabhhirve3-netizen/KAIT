@@ -1,0 +1,15 @@
+{
+  "entry_time": "2026-06-23 11:37:27",
+  "ce_symbol": "NIFTY26JUN24100CE",
+  "pe_symbol": "NIFTY26JUN24100PE",
+  "strike": 24100.0,
+  "expiry": "2026-06-30",
+  "lots": 1,
+  "lot_size": 65,
+  "quantity": 65,
+  "ce_entry": 148.1,
+  "pe_entry": 126.7,
+  "total_premium": 274.8,
+  "sl_trigger": 554.7,
+  "status": "OPEN"
+}

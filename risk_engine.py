@@ -37,7 +37,7 @@ DEFAULT_CONFIG = {
     'loss_streak_limit':        3,
 
     # Nifty lot size (fixed by NSE)
-    'lot_size':                 50,
+    'lot_size': 65,
 
     # Minimum margin required per lot (approx for short straddle)
     # Update this based on your broker's actual margin requirement
@@ -153,7 +153,10 @@ def calculate_position_size(signal: dict, config: dict) -> dict:
     """
     capital       = config['total_capital']
     max_risk_pct  = config['max_risk_per_trade_pct']
-    lot_size      = config['lot_size']
+    lot_size = signal.get('trade', {}).get(
+        'lot_size',
+        config['lot_size']
+    )
     margin_per_lot = config['margin_per_lot']
     max_exp_pct   = config['max_exposure_pct']
 
@@ -176,7 +179,22 @@ def calculate_position_size(signal: dict, config: dict) -> dict:
     lots_by_margin = int(max_exposure / margin_per_lot)
 
     # Take the more conservative of the two
-    recommended_lots = max(1, min(lots_by_risk, lots_by_margin))
+    recommended_lots = min(
+        lots_by_risk,
+        lots_by_margin
+    )
+
+    # Trade not allowed if sizing becomes zero
+    if recommended_lots <= 0:
+        return {
+            'recommended_lots': 0,
+            'lots_by_risk': lots_by_risk,
+            'lots_by_margin': lots_by_margin,
+            'max_risk_per_trade': round(max_risk_rs, 2),
+            'margin_required': 0,
+            'capital_required': 0,
+            'reasoning': 'Trade exceeds risk limits'
+        }
 
     return {
         'recommended_lots': recommended_lots,
@@ -286,6 +304,10 @@ def validate_signal(signal: dict) -> dict:
 
     # ── POSITION SIZING ───────────────────────────────────────
     sizing = calculate_position_size(signal, config)
+    if sizing['recommended_lots'] <= 0:
+        failed.append(
+            "❌ Position size is 0 lots — trade exceeds risk limits"
+        )
 
     # ── FINAL DECISION ────────────────────────────────────────
     approved = len(failed) == 0

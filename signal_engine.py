@@ -4,6 +4,7 @@ import sqlite3
 import pandas as pd
 from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
+from config import DTE_MIN, DTE_MAX
 
 load_dotenv()
 
@@ -47,8 +48,8 @@ RULES = {
     'straddle_sl_multiple': 2.0,    # Exit if straddle value = 2x entry premium
 
     # Days to expiry — only enter when DTE is in this range
-    'dte_min':              3,      # Don't enter if less than 3 days left
-    'dte_max':              6,      # Don't enter if more than 6 days left
+    'dte_min': DTE_MIN,
+    'dte_max': DTE_MAX,
 
     # OI concentration — avoid if too concentrated (manipulation risk)
     'oi_concentration_max': 80.0,   # % of OI in top 3 strikes
@@ -79,11 +80,15 @@ def get_recent_candles(days=10) -> pd.DataFrame:
 
 def get_recent_move_pct(candles_df) -> float:
     """Calculate % move of Nifty over last 5 trading days."""
-    if len(candles_df) < 2:
+
+    if len(candles_df) < 5:
         return 0.0
+
     recent = candles_df.tail(5)
-    start  = recent.iloc[0]['close']
-    end    = recent.iloc[-1]['close']
+
+    start = recent.iloc[0]['close']
+    end = recent.iloc[-1]['close']
+
     return round(abs((end - start) / start * 100), 2)
 
 
@@ -232,7 +237,13 @@ def generate_signal(features: dict, check_date=None) -> dict:
 
     # ── GENERATE SIGNAL ───────────────────────────────────────
     # All filters must pass for a SELL_STRADDLE signal
-    critical_filters = ['event_week', 'dte', 'iv', 'recent_move']
+    critical_filters = [
+        'event_week',
+        'dte',
+        'iv',
+        'recent_move',
+        'max_pain_proximity'
+    ]
     critical_pass    = all(filters.get(f, False) for f in critical_filters)
     all_pass         = len(failed) == 0
 
@@ -245,50 +256,115 @@ def generate_signal(features: dict, check_date=None) -> dict:
 
     # ── TRADE DETAILS ─────────────────────────────────────────
     trade = {}
+
     if signal == 'SELL_STRADDLE':
-        # Estimate premium using current IV
-        import math
-        from scipy.stats import norm
 
-        T = max(dte / 365, 0.0001)
-        r = 0.065
-        sigma_ce = ce_iv / 100
-        sigma_pe = pe_iv / 100
+        ce_premium = round(features.get('atm_ce_ltp', 0), 2)
+        pe_premium = round(features.get('atm_pe_ltp', 0), 2)
 
-        # Black-Scholes for ATM CE and PE
-        def bs(S, K, T, r, sig, t):
-            if T <= 0 or sig <= 0: return 0
-            d1 = (math.log(S/K) + (r + 0.5*sig**2)*T) / (sig*math.sqrt(T))
-            d2 = d1 - sig*math.sqrt(T)
-            if t == 'CE': return S*norm.cdf(d1) - K*math.exp(-r*T)*norm.cdf(d2)
-            else:         return K*math.exp(-r*T)*norm.cdf(-d2) - S*norm.cdf(-d1)
+        # Safety check
+        if ce_premium <= 0 or pe_premium <= 0:
+            signal = 'NO_TRADE'
 
-        ce_premium  = round(bs(spot, atm, T, r, sigma_ce, 'CE'), 2)
-        pe_premium  = round(bs(spot, atm, T, r, sigma_pe, 'PE'), 2)
-        total_prem  = round(ce_premium + pe_premium, 2)
+        # Fallback to Black-Scholes if LTPs are unavailable
+        if ce_premium == 0 or pe_premium == 0:
 
-        stop_loss   = round(total_prem * RULES['straddle_sl_multiple'], 2)
-        max_profit  = round(total_prem * 50, 2)       # 1 lot = 50 units
-        max_loss_sl = round(stop_loss   * 50, 2)
+            import math
+            from scipy.stats import norm
+
+            T = max(dte / 365, 0.0001)
+            r = 0.065
+
+            sigma_ce = ce_iv / 100
+            sigma_pe = pe_iv / 100
+
+            def bs(S, K, T, r, sig, option_type):
+
+                if T <= 0 or sig <= 0:
+                    return 0
+
+                d1 = (
+                             math.log(S / K)
+                             + (r + 0.5 * sig ** 2) * T
+                     ) / (sig * math.sqrt(T))
+
+                d2 = d1 - sig * math.sqrt(T)
+
+                if option_type == 'CE':
+                    return (
+                            S * norm.cdf(d1)
+                            - K * math.exp(-r * T) * norm.cdf(d2)
+                    )
+
+                return (
+                        K * math.exp(-r * T) * norm.cdf(-d2)
+                        - S * norm.cdf(-d1)
+                )
+
+            ce_premium = round(
+                bs(spot, atm, T, r, sigma_ce, 'CE'),
+                2
+            )
+
+            pe_premium = round(
+                bs(spot, atm, T, r, sigma_pe, 'PE'),
+                2
+            )
+
+        total_prem = round(ce_premium + pe_premium, 2)
+
+        stop_loss = round(
+            total_prem * RULES['straddle_sl_multiple'],
+            2
+        )
+
+        lot_size = int(features.get('lot_size', 75))
+
+        max_profit = round(total_prem * lot_size, 2)
+        max_loss_sl = round(stop_loss * lot_size, 2)
 
         trade = {
-            'action':           'SELL STRADDLE',
-            'instrument':       'NIFTY',
-            'expiry':           features.get('expiry', ''),
-            'atm_strike':       atm,
-            'ce_symbol':        f"NIFTY{str(features.get('expiry',''))[:10].replace('-','')}{int(atm)}CE",
-            'pe_symbol':        f"NIFTY{str(features.get('expiry',''))[:10].replace('-','')}{int(atm)}PE",
-            'sell_ce_at':       f"Rs. {ce_premium} (market price)",
-            'sell_pe_at':       f"Rs. {pe_premium} (market price)",
-            'total_premium':    total_prem,
-            'stop_loss_value':  stop_loss,
-            'stop_loss_rule':   f"Exit if combined straddle value exceeds Rs. {stop_loss}",
-            'max_profit_1lot':  f"Rs. {max_profit:,.0f} (if Nifty closes at {atm} on expiry)",
-            'max_loss_1lot':    f"Rs. {max_loss_sl:,.0f} (if SL is hit)",
-            'breakeven_upper':  round(atm + total_prem, 2),
-            'breakeven_lower':  round(atm - total_prem, 2),
-            'quantity':         '1 lot (50 units) — adjust per risk engine',
-            'exit_rule':        'Close both legs on expiry Thursday, or on SL hit',
+            'action': 'SELL STRADDLE',
+            'instrument': 'NIFTY',
+            'expiry': features.get('expiry', ''),
+            'atm_strike': atm,
+            'lot_size': features.get('lot_size', 65),
+
+            'ce_symbol': features.get('atm_ce_symbol', ''),
+            'pe_symbol': features.get('atm_pe_symbol', ''),
+
+            'sell_ce_at': f"Rs. {ce_premium} (live LTP)",
+            'sell_pe_at': f"Rs. {pe_premium} (live LTP)",
+
+            'total_premium': total_prem,
+
+            'stop_loss_value': stop_loss,
+
+            'stop_loss_rule': (
+                f"Exit if combined straddle value exceeds "
+                f"Rs. {stop_loss}"
+            ),
+
+            'max_profit_1lot': (
+                f"Rs. {max_profit:,.0f} "
+                f"(if Nifty closes at {atm} on expiry)"
+            ),
+
+            'max_loss_1lot': (
+                f"Rs. {max_loss_sl:,.0f} "
+                f"(if SL is hit)"
+            ),
+
+            'breakeven_upper': round(atm + total_prem, 2),
+            'breakeven_lower': round(atm - total_prem, 2),
+
+            'quantity': (
+                f'1 lot ({lot_size} units) — adjust per risk engine'
+            ),
+
+            'exit_rule': (
+                'Close both legs on expiry Thursday, or on SL hit'
+            ),
         }
 
     # ── FINAL SIGNAL DICT ─────────────────────────────────────

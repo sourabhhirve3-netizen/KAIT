@@ -1,10 +1,10 @@
 {
   "total_capital": 100000,
-  "max_risk_per_trade_pct": 2.0,
+  "max_risk_per_trade_pct": 40.0,
   "daily_loss_limit": 2000,
   "max_concurrent_positions": 2,
-  "max_exposure_pct": 20.0,
+  "max_exposure_pct": 100.0,
   "loss_streak_limit": 3,
-  "lot_size": 50,
+  "lot_size": 65,
   "margin_per_lot": 85000
 }
