@@ -1,0 +1,43 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-06-24 13:07:40",
+  "api_metrics": {
+    "response_time_ms": 130094.92,
+    "prompt_tokens": 2526,
+    "completion_tokens": 530
+  },
+  "features_snapshot": {
+    "spot_price": 23998.6,
+    "atm_strike": 24000,
+    "expiry": "2026-06-30",
+    "dte": 6,
+    "pcr": 1.108,
+    "sentiment": "Neutral",
+    "atm_ce_iv": 11.55,
+    "atm_pe_iv": 12.83,
+    "max_pain": 24000.0
+  },
+  "signal": "NO_TRADE",
+  "analysis": {
+    "market_regime": "bullish",
+    "analysis_strength": 0.8,
+    "key_observations": [
+      "PCR is 1.108 which is INSIDE the neutral range (0.8-1.2)",
+      "Spot is within 25 points of Max Pain, a strong evidence of a balanced market",
+      "ATM CE IV is 11.55% which is moderate volatility"
+    ],
+    "volatility_assessment": "Volatility is moderate, traders expect smaller future moves",
+    "theta_assessment": "Theta for ATM CE is -14.02 Rs/day, approximately 2.33% of premium per day lost",
+    "oi_assessment": "Concentrated OI means traders are focused around a few strikes (57.6% for CE and 63.5% for PE)",
+    "trade_context": "Exactly one filter failed: DTE 6 is outside range (7-9 days), but all other filters passed",
+    "risk_factors": [
+      "DTE 6 is outside the optimal range of 7-9 days, increasing the risk of time decay",
+      "IV Skew is positive at 1.28, indicating traders are paying more for downside protection"
+    ],
+    "invalidation": "If PCR falls below 0.8 or IV Skew turns negative, it would invalidate this analysis",
+    "anomalies": "None detected",
+    "analyst_note": "Current market is showing signs of a bullish trend with moderate volatility",
+    "beginner_explanation": "The current market situation can be explained as follows: PCR (Put-Call Ratio) is above the neutral range, indicating a potential bullish trend. Max Pain is near the spot price, which means that traders are balanced and neither too bearish nor too bullish. IV (Implied Volatility) is moderate at 11.55%, meaning that traders expect smaller future moves. Overall, this market appears to be in a sideways regime.",
+    "todays_lesson": "Today's lesson: Understanding PCR - The Put-Call Ratio (PCR) measures the ratio of put options to call options traded. A high PCR suggests that investors are expecting prices to fall and thus buying more puts than calls, while a low PCR suggests they expect prices to rise. In today's data, PCR is at 1.108, which means it is within the neutral range (0.8-1.2), indicating balanced expectations from traders."
+  }
+}

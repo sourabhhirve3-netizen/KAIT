@@ -162,7 +162,15 @@ def calculate_position_size(signal: dict, config: dict) -> dict:
 
     trade = signal.get('trade', {})
     if not trade:
-        return {'lots': 0, 'reason': 'No trade details in signal'}
+        return {
+            'recommended_lots': 0,
+            'lots_by_risk': 0,
+            'lots_by_margin': 0,
+            'margin_required': 0,
+            'capital_required': 0,
+            'max_risk_per_trade': 0,
+            'reasoning': 'No trade details in signal'
+        }
 
     # Max loss per unit = stop loss value × lot size
     sl_value    = trade.get('stop_loss_value', 0)
@@ -222,6 +230,36 @@ def validate_signal(signal: dict) -> dict:
     checks = []
     passed = []
     failed = []
+
+    # ── EARLY EXIT: No trade signal ─────────────────────────────
+    if signal.get('signal') != 'SELL_STRADDLE':
+        return {
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'approved': False,
+            'decision': 'REJECTED',
+            'passed': [],
+            'failed': [f"❌ Signal is {signal.get('signal')} — no trade to validate"],
+            'sizing': {
+                'recommended_lots': 0,
+                'lots_by_risk': 0,
+                'lots_by_margin': 0,
+                'margin_required': 0,
+                'max_risk_per_trade': 0,
+                'reasoning': 'No trade signal'
+            },
+            'config_used': {
+                'total_capital': config['total_capital'],
+                'daily_loss_limit': config['daily_loss_limit'],
+                'max_risk_pct': config['max_risk_per_trade_pct'],
+                'max_positions': config['max_concurrent_positions'],
+            },
+            'state': {
+                'daily_pnl': state['daily_pnl'],
+                'trades_today': state['trades_today'],
+                'open_positions': state['open_positions'],
+                'consecutive_losses': state['consecutive_losses'],
+            }
+        }
 
     # ── CHECK 1: Circuit Breaker ──────────────────────────────
     halted, halt_reason = check_circuit_breaker(state)
@@ -304,7 +342,7 @@ def validate_signal(signal: dict) -> dict:
 
     # ── POSITION SIZING ───────────────────────────────────────
     sizing = calculate_position_size(signal, config)
-    if sizing['recommended_lots'] <= 0:
+    if sizing.get('recommended_lots', 0) <= 0:
         failed.append(
             "❌ Position size is 0 lots — trade exceeds risk limits"
         )
