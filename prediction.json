@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-06-24 16:19:38",
+  "model_metrics": {
+    "mae_points": 286.18
+  },
+  "spot": 24085.7,
+  "predicted_move": 380.71,
+  "expected_range": {
+    "low": 23704.99,
+    "high": 24466.41
+  }
+}

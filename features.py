@@ -277,6 +277,48 @@ def calculate_features(chain_df, spot_price, expiry_date):
 
     distance_from_max_pain = round(spot_price - max_pain, 2)
 
+    # =====================================================
+    # PREDICTIVE FEATURES FOR ML MODELS
+    # =====================================================
+
+    support_distance = round(
+        ((spot_price - support) / spot_price) * 100,
+        2
+    )
+
+    resistance_distance = round(
+        ((resistance - spot_price) / spot_price) * 100,
+        2
+    )
+
+    max_pain_distance_pct = round(
+        abs(distance_from_max_pain) / spot_price * 100,
+        2
+    )
+
+    oi_ratio_top3 = round(
+        ce_conc / pe_conc,
+        2
+    ) if pe_conc > 0 else 1
+
+    iv_average = round(
+        (atm_ce_iv + atm_pe_iv) / 2,
+        2
+    )
+
+    oi_difference_pct = round(
+        ((total_pe_oi - total_ce_oi) / total_ce_oi) * 100,
+        2
+    ) if total_ce_oi > 0 else 0
+
+    iv_regime = (
+        "LOW"
+        if iv_average < 12
+        else "MODERATE"
+        if iv_average <= 18
+        else "HIGH"
+    )
+
     features = {
         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'spot_price': spot_price,
@@ -329,6 +371,17 @@ def calculate_features(chain_df, spot_price, expiry_date):
 
         'total_ce_volume': total_ce_vol,
         'total_pe_volume': total_pe_vol,
+        # ML FEATURES
+
+        'support_distance_pct': support_distance,
+        'resistance_distance_pct': resistance_distance,
+        'max_pain_distance_pct': max_pain_distance_pct,
+
+        'oi_ratio_top3': oi_ratio_top3,
+
+        'iv_average': iv_average,
+        'iv_regime': iv_regime,
+        'oi_difference_pct': oi_difference_pct
     }
 
     return features
@@ -388,6 +441,15 @@ if __name__ == '__main__':
         "PE GREEKS (ATM)": ['pe_delta', 'pe_gamma', 'pe_theta', 'pe_vega'],
         "OI STATS": ['total_ce_oi', 'total_pe_oi', 'ce_oi_concentration_pct', 'pe_oi_concentration_pct'],
         "VOLUME": ['total_ce_volume', 'total_pe_volume'],
+        "ML FEATURES": [
+            'support_distance_pct',
+            'resistance_distance_pct',
+            'max_pain_distance_pct',
+            'oi_ratio_top3',
+            'iv_average',
+            'iv_regime',
+            'oi_difference_pct'
+        ],
     }
 
     for section, keys in sections.items():
@@ -402,4 +464,20 @@ if __name__ == '__main__':
         json.dump(features, f, indent=2)
 
     print("\n✅ Features saved to features.json")
+
+    # --------------------------------------------------
+    # Auto-log snapshot to features_log table
+    # --------------------------------------------------
+
+    import subprocess
+
+    try:
+        subprocess.run(
+            ["python", "feature_logger.py"],
+            check=True
+        )
+        print("✅ Features logged to database")
+    except Exception as e:
+        print(f"❌ Feature logger failed: {e}")
+
     print("   (This file will be used by signal_engine.py and ai_analyst.py)")

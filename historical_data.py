@@ -88,10 +88,19 @@ def create_tables():
             pe_vega                     REAL,
             total_ce_oi                 INTEGER,
             total_pe_oi                 INTEGER,
-            ce_oi_concentration_pct     REAL,
-            pe_oi_concentration_pct     REAL,
-            total_ce_volume             INTEGER,
-            total_pe_volume             INTEGER
+            ce_oi_concentration_pct REAL,
+            pe_oi_concentration_pct REAL,
+            
+            support_distance_pct REAL,
+            resistance_distance_pct REAL,
+            max_pain_distance_pct REAL,
+            oi_ratio_top3 REAL,
+            iv_average REAL,
+            iv_regime TEXT,
+            oi_difference_pct REAL,
+            
+            total_ce_volume INTEGER,
+            total_pe_volume INTEGER
         )
     ''')
 
@@ -136,6 +145,13 @@ def save_features(features: dict):
         'pe_delta', 'pe_gamma', 'pe_theta', 'pe_vega',
         'total_ce_oi', 'total_pe_oi',
         'ce_oi_concentration_pct', 'pe_oi_concentration_pct',
+        'support_distance_pct',
+        'resistance_distance_pct',
+        'max_pain_distance_pct',
+        'oi_ratio_top3',
+        'iv_average',
+        'iv_regime',
+        'oi_difference_pct',
         'total_ce_volume', 'total_pe_volume'
     ]
 
