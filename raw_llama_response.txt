@@ -1,36 +1,36 @@
 {
   "market_regime": "bullish",
   
-  "analysis_strength": 0.8,
+  "analysis_strength": 0.65,
   
   "key_observations": [
-    "PCR is 1.108 which is INSIDE the neutral range (0.8-1.2)",
-    "Spot is within 25 points of Max Pain, a strong evidence of a balanced market",
-    "ATM CE IV is 11.55% which is moderate volatility"
+    "PCR is 1.109 which is INSIDE the neutral range (0.8-1.2)",
+    "Spot is 24194.05 and Max Pain is 24150, a distance of 44.05 points",
+    "IV Skew is positive at 0.57, indicating downside fear"
   ],
   
-  "volatility_assessment": "Volatility is moderate, traders expect smaller future moves",
+  "volatility_assessment": "Volatility is moderate with ATM CE IV at 9.34%",
   
-  "theta_assessment": "Theta for ATM CE is -14.02 Rs/day, approximately 2.33% of premium per day lost",
+  "theta_assessment": "Theta is sufficient for both CE and PE options with -12.77 Rs/day for CE and -9.11 Rs/day for PE",
   
-  "oi_assessment": "Concentrated OI means traders are focused around a few strikes (57.6% for CE and 63.5% for PE)",
+  "oi_assessment": "OI concentration is high for both CE and PE options, with 50.1% for CE and 64.8% for PE",
   
-  "trade_context": "Exactly one filter failed: DTE 6 is outside range (7-9 days), but all other filters passed",
+  "trade_context": "All filters passed except DTE which is outside the range (7-9 days). The signal engine produced a NO_TRADE result.",
   
   "risk_factors": [
-    "DTE 6 is outside the optimal range of 7-9 days, increasing the risk of time decay",
-    "IV Skew is positive at 1.28, indicating traders are paying more for downside protection"
+    "The market may move against our analysis if it's actually bearish and not neutral as PCR suggests",
+    "The spot price being far from Max Pain could indicate a strong trend, which might be risky for options trading"
   ],
   
-  "invalidation": "If PCR falls below 0.8 or IV Skew turns negative, it would invalidate this analysis",
+  "invalidation": "Invalidation of this analysis would be if PCR were to drop below 0.8 or IV Skew were to turn negative",
   
   "anomalies": "None detected",
   
-  "analyst_note": "Current market is showing signs of a bullish trend with moderate volatility",
+  "analyst_note": "Market is currently in a neutral PCR range but has bullish sentiment, with moderate volatility and sufficient theta for options trading",
   
   "beginner_explanation":
-    "The current market situation can be explained as follows: PCR (Put-Call Ratio) is above the neutral range, indicating a potential bullish trend. Max Pain is near the spot price, which means that traders are balanced and neither too bearish nor too bullish. IV (Implied Volatility) is moderate at 11.55%, meaning that traders expect smaller future moves. Overall, this market appears to be in a sideways regime.",
+    "The current market situation is complex. The PCR is within the neutral range, indicating that there's no clear bias towards buying or selling. However, the spot price being far from Max Pain suggests a strong trend, which can be risky for options trading. Volatility is moderate, and IV Skew is positive, indicating downside fear.",
   
   "todays_lesson":
-    "Today's lesson: Understanding PCR - The Put-Call Ratio (PCR) measures the ratio of put options to call options traded. A high PCR suggests that investors are expecting prices to fall and thus buying more puts than calls, while a low PCR suggests they expect prices to rise. In today's data, PCR is at 1.108, which means it is within the neutral range (0.8-1.2), indicating balanced expectations from traders."
+    "One key concept in options market analysis is PCR (Put-Call Ratio). PCR measures the ratio of put options to call options being traded. A high PCR indicates that more traders are expecting the price to fall, while a low PCR suggests they expect it to rise. In this case, PCR is within the neutral range (0.8-1.2), indicating balanced expectations."
 }

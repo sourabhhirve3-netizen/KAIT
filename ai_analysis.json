@@ -1,43 +1,43 @@
 {
   "version": "1.1",
-  "timestamp": "2026-06-24 13:07:40",
+  "timestamp": "2026-06-25 12:58:57",
   "api_metrics": {
-    "response_time_ms": 130094.92,
+    "response_time_ms": 120723.61,
     "prompt_tokens": 2526,
-    "completion_tokens": 530
+    "completion_tokens": 522
   },
   "features_snapshot": {
-    "spot_price": 23998.6,
-    "atm_strike": 24000,
+    "spot_price": 24194.05,
+    "atm_strike": 24200,
     "expiry": "2026-06-30",
-    "dte": 6,
-    "pcr": 1.108,
+    "dte": 5,
+    "pcr": 1.109,
     "sentiment": "Neutral",
-    "atm_ce_iv": 11.55,
-    "atm_pe_iv": 12.83,
-    "max_pain": 24000.0
+    "atm_ce_iv": 9.34,
+    "atm_pe_iv": 9.91,
+    "max_pain": 24150.0
   },
   "signal": "NO_TRADE",
   "analysis": {
     "market_regime": "bullish",
-    "analysis_strength": 0.8,
+    "analysis_strength": 0.65,
     "key_observations": [
-      "PCR is 1.108 which is INSIDE the neutral range (0.8-1.2)",
-      "Spot is within 25 points of Max Pain, a strong evidence of a balanced market",
-      "ATM CE IV is 11.55% which is moderate volatility"
+      "PCR is 1.109 which is INSIDE the neutral range (0.8-1.2)",
+      "Spot is 24194.05 and Max Pain is 24150, a distance of 44.05 points",
+      "IV Skew is positive at 0.57, indicating downside fear"
     ],
-    "volatility_assessment": "Volatility is moderate, traders expect smaller future moves",
-    "theta_assessment": "Theta for ATM CE is -14.02 Rs/day, approximately 2.33% of premium per day lost",
-    "oi_assessment": "Concentrated OI means traders are focused around a few strikes (57.6% for CE and 63.5% for PE)",
-    "trade_context": "Exactly one filter failed: DTE 6 is outside range (7-9 days), but all other filters passed",
+    "volatility_assessment": "Volatility is moderate with ATM CE IV at 9.34%",
+    "theta_assessment": "Theta is sufficient for both CE and PE options with -12.77 Rs/day for CE and -9.11 Rs/day for PE",
+    "oi_assessment": "OI concentration is high for both CE and PE options, with 50.1% for CE and 64.8% for PE",
+    "trade_context": "All filters passed except DTE which is outside the range (7-9 days). The signal engine produced a NO_TRADE result.",
     "risk_factors": [
-      "DTE 6 is outside the optimal range of 7-9 days, increasing the risk of time decay",
-      "IV Skew is positive at 1.28, indicating traders are paying more for downside protection"
+      "The market may move against our analysis if it's actually bearish and not neutral as PCR suggests",
+      "The spot price being far from Max Pain could indicate a strong trend, which might be risky for options trading"
     ],
-    "invalidation": "If PCR falls below 0.8 or IV Skew turns negative, it would invalidate this analysis",
+    "invalidation": "Invalidation of this analysis would be if PCR were to drop below 0.8 or IV Skew were to turn negative",
     "anomalies": "None detected",
-    "analyst_note": "Current market is showing signs of a bullish trend with moderate volatility",
-    "beginner_explanation": "The current market situation can be explained as follows: PCR (Put-Call Ratio) is above the neutral range, indicating a potential bullish trend. Max Pain is near the spot price, which means that traders are balanced and neither too bearish nor too bullish. IV (Implied Volatility) is moderate at 11.55%, meaning that traders expect smaller future moves. Overall, this market appears to be in a sideways regime.",
-    "todays_lesson": "Today's lesson: Understanding PCR - The Put-Call Ratio (PCR) measures the ratio of put options to call options traded. A high PCR suggests that investors are expecting prices to fall and thus buying more puts than calls, while a low PCR suggests they expect prices to rise. In today's data, PCR is at 1.108, which means it is within the neutral range (0.8-1.2), indicating balanced expectations from traders."
+    "analyst_note": "Market is currently in a neutral PCR range but has bullish sentiment, with moderate volatility and sufficient theta for options trading",
+    "beginner_explanation": "The current market situation is complex. The PCR is within the neutral range, indicating that there's no clear bias towards buying or selling. However, the spot price being far from Max Pain suggests a strong trend, which can be risky for options trading. Volatility is moderate, and IV Skew is positive, indicating downside fear.",
+    "todays_lesson": "One key concept in options market analysis is PCR (Put-Call Ratio). PCR measures the ratio of put options to call options being traded. A high PCR indicates that more traders are expecting the price to fall, while a low PCR suggests they expect it to rise. In this case, PCR is within the neutral range (0.8-1.2), indicating balanced expectations."
   }
 }
