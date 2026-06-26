@@ -1,43 +1,43 @@
 {
   "version": "1.1",
-  "timestamp": "2026-06-25 12:58:57",
+  "timestamp": "2026-06-26 11:08:05",
   "api_metrics": {
-    "response_time_ms": 120723.61,
-    "prompt_tokens": 2526,
-    "completion_tokens": 522
+    "response_time_ms": 169937.66,
+    "prompt_tokens": 2521,
+    "completion_tokens": 505
   },
   "features_snapshot": {
-    "spot_price": 24194.05,
-    "atm_strike": 24200,
+    "spot_price": 24056,
+    "atm_strike": 24050,
     "expiry": "2026-06-30",
-    "dte": 5,
-    "pcr": 1.109,
+    "dte": 4,
+    "pcr": 0.994,
     "sentiment": "Neutral",
-    "atm_ce_iv": 9.34,
-    "atm_pe_iv": 9.91,
-    "max_pain": 24150.0
+    "atm_ce_iv": 11.58,
+    "atm_pe_iv": 9.68,
+    "max_pain": 24050.0
   },
   "signal": "NO_TRADE",
   "analysis": {
-    "market_regime": "bullish",
+    "market_regime": "bearish",
     "analysis_strength": 0.65,
     "key_observations": [
-      "PCR is 1.109 which is INSIDE the neutral range (0.8-1.2)",
-      "Spot is 24194.05 and Max Pain is 24150, a distance of 44.05 points",
-      "IV Skew is positive at 0.57, indicating downside fear"
+      "PCR is 0.994 which is INSIDE the neutral range of 0.8 to 1.2, indicating a balanced market sentiment.",
+      "The Spot price of 24056 is within 6 points of Max Pain at 24050, suggesting strong evidence of a balanced market.",
+      "IV is moderate with ATM CE IV at 11.58% and ATM PE IV at 9.68%, indicating traders expect moderate future moves."
     ],
-    "volatility_assessment": "Volatility is moderate with ATM CE IV at 9.34%",
-    "theta_assessment": "Theta is sufficient for both CE and PE options with -12.77 Rs/day for CE and -9.11 Rs/day for PE",
-    "oi_assessment": "OI concentration is high for both CE and PE options, with 50.1% for CE and 64.8% for PE",
-    "trade_context": "All filters passed except DTE which is outside the range (7-9 days). The signal engine produced a NO_TRADE result.",
+    "volatility_assessment": "Volatility is moderate based on the IV values, implying traders expect smaller to average future price movements.",
+    "theta_assessment": "Theta is relatively high for ATM CE with a daily time decay of -16.75 Rs/day, indicating a significant loss of premium per day.",
+    "oi_assessment": "OI concentration is normal with CE OI at 53.8% and PE OI at 53.0%, suggesting traders are focused around the top strikes.",
+    "trade_context": "All filters passed except for DTE which failed, but all other conditions including PCR, IV, and OI concentration support a trade.",
     "risk_factors": [
-      "The market may move against our analysis if it's actually bearish and not neutral as PCR suggests",
-      "The spot price being far from Max Pain could indicate a strong trend, which might be risky for options trading"
+      "The Spot price is within 6 points of Max Pain, increasing the likelihood of a balanced market.",
+      "IV is moderate, indicating traders expect average future moves."
     ],
-    "invalidation": "Invalidation of this analysis would be if PCR were to drop below 0.8 or IV Skew were to turn negative",
+    "invalidation": "A high-volatility event or a sudden change in PCR would invalidate this analysis.",
     "anomalies": "None detected",
-    "analyst_note": "Market is currently in a neutral PCR range but has bullish sentiment, with moderate volatility and sufficient theta for options trading",
-    "beginner_explanation": "The current market situation is complex. The PCR is within the neutral range, indicating that there's no clear bias towards buying or selling. However, the spot price being far from Max Pain suggests a strong trend, which can be risky for options trading. Volatility is moderate, and IV Skew is positive, indicating downside fear.",
-    "todays_lesson": "One key concept in options market analysis is PCR (Put-Call Ratio). PCR measures the ratio of put options to call options being traded. A high PCR indicates that more traders are expecting the price to fall, while a low PCR suggests they expect it to rise. In this case, PCR is within the neutral range (0.8-1.2), indicating balanced expectations."
+    "analyst_note": "The current market situation suggests a bearish regime with a balanced market sentiment and moderate volatility.",
+    "beginner_explanation": "PCR stands for Put-Call Ratio, which measures the number of put options traded compared to call options. A PCR value above 1.2 is considered bullish, while below 0.8 is bearish. In this case, the PCR is inside the neutral range, indicating a balanced market sentiment.",
+    "todays_lesson": "Theta (\u03b8) represents daily time decay and measures how much option premium is lost per day due to the passage of time. In today's data, ATM CE has a theta of -16.75 Rs/day, highlighting its significant loss of premium per day."
   }
 }

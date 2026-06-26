@@ -1,0 +1,18 @@
+{
+    "trend": "RANGEBOUND",
+    "trend_score": 1,
+    "reasons": [
+        "PCR is neutral.",
+        "Open Interest is balanced.",
+        "Spot is trading near Max Pain.",
+        "Spot near support.",
+        "Low implied volatility suggests a calm market.",
+        "Price is very close to Max Pain.",
+        "Market is trading close to major support."
+    ],
+    "volatility": "LOW_VOL",
+    "volatility_score": 80,
+    "confidence": 55,
+    "market_score": 49.2,
+    "summary": "Trend: RANGEBOUND\nConfidence: 55%\nMarket Score: 49.2/100\n\nKey Reasons:\n\u2022 PCR is neutral.\n\u2022 Open Interest is balanced.\n\u2022 Spot is trading near Max Pain.\n\u2022 Spot near support.\n\u2022 Low implied volatility suggests a calm market.\n\u2022 Price is very close to Max Pain.\n\u2022 Market is trading close to major support."
+}

@@ -1,0 +1,23 @@
+{
+    "timestamp": "2026-06-26 11:05:12",
+    "trend": "RANGEBOUND",
+    "trend_score": 55,
+    "volatility": "LOW_VOL",
+    "volatility_score": 85,
+    "conviction": "HIGH",
+    "conviction_score": 75,
+    "bullish_probability": 12,
+    "bearish_probability": 13,
+    "neutral_probability": 75,
+    "market_state": "LOW_VOL_RANGE",
+    "summary": [
+        "PCR is neutral.",
+        "Open Interest is balanced.",
+        "Spot is trading near Max Pain.",
+        "Spot near support.",
+        "Low implied volatility suggests a calm market.",
+        "PCR is neutral.",
+        "Open Interest is balanced.",
+        "Spot is close to Max Pain."
+    ]
+}

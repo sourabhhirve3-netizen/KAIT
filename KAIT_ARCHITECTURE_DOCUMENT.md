@@ -1,594 +1,232 @@
-# KAIT_ARCHITECTURE_DOCUMENT.md
+# KAIT — Knowledge Augmented Intelligent Trader (KAIT)
 
-# KAIT — Knowledge Augmented Intelligent Trader
-
-Version: Phase 9F Complete (Unified ML Architecture)
+Version: Phase 10 Architecture
 
 Author: Sourabh Hirve
 
 ---
 
-# 1. PROJECT VISION
+# 1. PROJECT OVERVIEW
 
-KAIT (Knowledge Augmented Intelligent Trader) is an AI-powered market intelligence and trading research platform built for Indian index options trading using Zerodha Kite.
+KAIT (Knowledge Augmented Intelligent Trader) is an AI-powered options trading intelligence platform built for the Indian stock market using Zerodha Kite APIs.
 
-KAIT is not designed to be a simple indicator-based trading strategy.
+The objective is **not** to create another indicator-based trading bot.
 
-The vision is to build a continuously learning market intelligence system capable of:
+The objective is to build an intelligent trading assistant capable of:
 
-* Collecting historical market data
-* Collecting option-chain data
-* Engineering market structure features
-* Building proprietary datasets
-* Training machine learning models
-* Producing AI-assisted market analysis
-* Generating trading signals
-* Managing risk
-* Evolving into a semi-autonomous trading assistant
+• Understanding the market
+• Learning from historical data
+• Understanding option chain positioning
+• Predicting future market behaviour
+• Ranking multiple trading strategies
+• Explaining WHY a trade should be taken
+• Recommending WHEN to exit
+• Continuously improving through data collection
 
-The most valuable asset of KAIT is not the code.
-
-The most valuable asset is the growing historical intelligence database.
+Eventually KAIT should behave like an experienced derivatives trader rather than a rule-based script.
 
 ---
 
-# 2. PROJECT GOAL
+# 2. LONG TERM GOAL
 
-Build a proprietary trading intelligence platform that combines:
+Current Trading Bots
 
-1. Statistical Learning
-2. Options Analytics
-3. Market Structure Analysis
-4. Large Language Model Reasoning
+↓
 
-The objective is to eventually create:
+Rule Based
 
-Market Data
 ↓
-Market Intelligence
+
+Fixed Strategy
+
 ↓
-Probabilistic Predictions
+
+Binary Decision
+
 ↓
-Trade Recommendations
+
+BUY / SELL
+
+KAIT Goal
+
 ↓
+
+Market Intelligence Engine
+
+↓
+
+AI Reasoning
+
+↓
+
+Machine Learning
+
+↓
+
+Strategy Ranking
+
+↓
+
+Trade Planning
+
+↓
+
+Exit Planning
+
+↓
+
+Continuous Learning
+
+↓
+
 Autonomous Trading Assistant
 
 ---
 
-# 3. CURRENT STATUS
+# 3. PROJECT PHILOSOPHY
 
-Current Phase:
+KAIT has two independent brains.
 
-Phase 9F Complete
+Brain 1
 
-Completed Systems:
+Machine Learning
 
-✓ Zerodha Authentication
+Learns only from collected historical data.
 
+Brain 2
+
+LLM (Llama)
+
+Uses knowledge learned from millions of examples worldwide.
+
+The final recommendation should combine BOTH.
+
+Example
+
+ML Confidence
+
+68%
+
+LLM Confidence
+
+82%
+
+Final Confidence
+
+76%
+
+This creates a much stronger decision engine.
+
+---
+
+# 4. CURRENT PROJECT STATUS
+
+Completed
+
+✓ Zerodha Login
 ✓ Historical Data Collection
-
-✓ SQLite Data Warehouse
-
-✓ Option Chain Collection
-
-✓ Feature Engineering Engine
-
-✓ Feature Logger
-
-✓ Historical Feature Builder
-
-✓ Dataset Builder
-
-✓ Unified ML Engine
-
+✓ Live Option Chain Collection
+✓ Feature Engineering
+✓ Feature Logging
 ✓ Signal Engine
-
 ✓ Risk Engine
-
-✓ AI Analyst
-
+✓ AI Analyst (Llama)
+✓ Historical Feature Builder
+✓ Dataset Builder
+✓ Unified ML Engine
 ✓ Database Explorer
 
 ---
 
-# 4. HIGH LEVEL SYSTEM ARCHITECTURE
+# 5. DATABASE
 
-```
-                Zerodha Kite
-                       │
-                       ▼
-            historical_data.py
-                       │
-      ┌────────────────┴────────────────┐
-      │                                 │
-      ▼                                 ▼
-```
-
-nifty_candles                 option_chain_snapshots
-│                                 │
-└──────────────┬──────────────────┘
-▼
-features.py
-│
-▼
-features.json
-│
-▼
-feature_logger.py
-│
-▼
-kait.db
-│
-┌──────────────────┼──────────────────┐
-│                  │                  │
-▼                  ▼                  ▼
-historical_feature   AI Analysis      Future Models
-│
-▼
-historical_features.csv
-│
-▼
-dataset_builder.py
-│
-▼
-training_dataset.csv
-│
-▼
-unified_ml_engine.py
-│
-▼
-kait_model.pkl
-
----
-
-# 5. DATABASE ARCHITECTURE
-
-Database:
+Database
 
 kait.db
 
-Primary Tables:
+Tables
 
-1. nifty_candles
-2. features_log
-3. option_chain_snapshots
-4. paper_trades
+nifty_candles
 
----
+Historical OHLC
 
-# 6. TABLE: nifty_candles
-
-Purpose:
-
-Stores historical NIFTY daily candles.
-
-Columns:
-
-date
-open
-high
-low
-close
-volume
-
-Current Records:
-
-244+
-
-Used By:
-
-* historical_feature.py
-* future backtesting
-* future ML models
-
----
-
-# 7. TABLE: features_log
-
-Purpose:
-
-Stores daily market intelligence snapshots generated from option-chain analytics.
-
-This is the most important table for future options-based machine learning.
-
-Stored Features:
-
-timestamp
-spot_price
-atm_strike
-expiry
-dte
-
-pcr
-sentiment
-
-max_pain
-distance_from_max_pain
-
-support
-resistance
-
-atm_ce_iv
-atm_pe_iv
-iv_skew
-
-ce_delta
-ce_gamma
-ce_theta
-ce_vega
-
-pe_delta
-pe_gamma
-pe_theta
-pe_vega
-
-total_ce_oi
-total_pe_oi
-
-ce_oi_concentration_pct
-pe_oi_concentration_pct
-
-support_distance_pct
-resistance_distance_pct
-max_pain_distance_pct
-
-oi_ratio_top3
-oi_difference_pct
-
-iv_average
-iv_regime
-
-total_ce_volume
-total_pe_volume
-
-Purpose:
-
-Future options-driven machine learning models.
-
----
-
-# 8. TABLE: option_chain_snapshots
-
-Purpose:
-
-Stores raw option chain observations.
-
-Current Data:
-
-* Strike
-* Option Type
-* LTP
-* OI
-* Volume
-* Bid
-* Ask
-* Expiry
-
-Future Use Cases:
-
-* OI Flow Analysis
-* IV Surface Analysis
-* Institutional Positioning
-* Market Microstructure Research
-
----
-
-# 9. TABLE: paper_trades
-
-Purpose:
-
-Stores simulated trades.
-
-Future Uses:
-
-* Backtesting
-* Paper Trading
-* Performance Analytics
-
-Current Status:
-
-Reserved for future phases.
-
----
-
-# 10. FEATURE ENGINE
-
-File:
-
-features.py
-
-Purpose:
-
-Convert raw option chain data into structured market intelligence.
-
-Generated Features:
-
-Sentiment:
-
-* PCR
-* Bullish/Bearish/Neutral
-
-Support & Resistance:
-
-* Highest CE OI
-* Highest PE OI
-
-Max Pain:
-
-* Writer Equilibrium Level
-
-Volatility:
-
-* ATM CE IV
-* ATM PE IV
-* IV Skew
-* IV Average
-* IV Regime
-
-Greeks:
-
-* Delta
-* Gamma
-* Theta
-* Vega
-
-Open Interest Analytics:
-
-* Total CE OI
-* Total PE OI
-* OI Concentration
-* OI Difference %
-
-Distance Analytics:
-
-* Support Distance %
-* Resistance Distance %
-* Max Pain Distance %
-
----
-
-# 11. FEATURE LOGGER
-
-File:
-
-feature_logger.py
-
-Purpose:
-
-Automatically save features.json into SQLite.
-
-Flow:
-
-features.py
-↓
-features.json
-↓
-feature_logger.py
-↓
 features_log
 
-Result:
+Daily market intelligence snapshots
 
-Every market snapshot becomes permanent training data.
+option_chain_snapshots
 
----
+Raw option chain
 
-# 12. HISTORICAL FEATURE BUILDER
+paper_trades
 
-File:
-
-historical_feature.py
-
-Purpose:
-
-Convert historical candle data into ML-ready features.
-
-Generated Features:
-
-return_1d
-return_5d
-return_10d
-return_20d
-
-ATR14
-
-RSI14
-
-Volatility20
-
-Momentum20
-
-SMA20
-
-SMA50
-
-Trend
-
-Target Variables:
-
-next_day_return
-
-direction
-
-Output:
-
-historical_features.csv
-
-Rows:
-
-194+
+Future trade simulator
 
 ---
 
-# 13. DATASET BUILDER
+# 6. FILE STRUCTURE
 
-File:
+## login.py
 
-dataset_builder.py
+Purpose
 
-Purpose:
+Authenticate with Zerodha.
 
-Build final ML training dataset.
+Creates
 
-Input:
+access_token.txt
 
-historical_features.csv
+Used By
 
-Output:
-
-training_dataset.csv
-
-Features:
-
-return_5d
-return_10d
-ATR14
-RSI14
-Volatility20
-Momentum20
-Trend
-
-Target:
-
-direction
-
-Purpose:
-
-Feed Unified ML Engine.
+All live market scripts.
 
 ---
 
-# 14. UNIFIED ML ENGINE
+## option_chain.py
 
-File:
+Reads
 
-unified_ml_engine.py
+Live Zerodha API
 
-Purpose:
+Produces
 
-Single machine learning engine replacing:
+option_chain.csv
 
-* market_predictor.py
-* direction_predictor.py
+Contains
 
-Models:
+ATM strikes
 
-1. Logistic Regression
-2. Random Forest
+CE
 
-Process:
+PE
 
-Load Dataset
-↓
-Train Models
-↓
-Evaluate Accuracy
-↓
-Select Best Model
-↓
-Save Model
+LTP
 
-Output:
+OI
 
-BULLISH / BEARISH
+Volume
 
-Confidence %
+Bid
 
-Current Accuracy:
+Ask
 
-≈ 51%
+Expiry
 
-Current Limitation:
+Spot Price
 
-Only 194 historical observations available.
+Purpose
 
-Expected Improvement:
-
-Accuracy should increase as more data accumulates.
+Raw market structure.
 
 ---
 
-# 15. AI ANALYST
+## features.py
 
-Files:
+Reads
 
-ai_analyst.py
-llamaAI_analyst.py
+option_chain.csv
 
-Purpose:
-
-Provide human-readable market interpretation.
-
-Inputs:
-
-features.json
-
-signal_engine output
-
-risk_engine output
-
-Output:
-
-Market Narrative
-
-Trade Explanation
-
-Risk Commentary
-
-Reasoning
-
-Example:
-
-PCR neutral.
-Max Pain near spot.
-Low IV environment.
-Range-bound conditions likely.
-
----
-
-# 16. WHY AI ANALYST IS IMPORTANT
-
-Current ML Dataset:
-
-~194 observations
-
-Current ML Accuracy:
-
-~51%
-
-Therefore:
-
-The AI Analyst currently provides more reliable market interpretation than the ML model.
-
-Reason:
-
-The LLM has been trained on massive amounts of market-related information.
-
-Current Recommended Decision Hierarchy:
-
-1. AI Analyst
-2. Signal Engine
-3. Unified ML Engine
-
-As KAIT collects more proprietary data, this ranking is expected to reverse.
-
----
-
-# 17. SIGNAL ENGINE
-
-Purpose:
-
-Generate actionable trade signals.
-
-Possible Outputs:
-
-BUY CALL
-
-BUY PUT
-
-NO TRADE
-
-Uses:
+Calculates
 
 PCR
 
@@ -598,261 +236,730 @@ Resistance
 
 Max Pain
 
-IV
+Implied Volatility
 
-OI Analysis
+Greeks
 
----
+IV Skew
 
-# 18. RISK ENGINE
+OI Concentration
 
-Purpose:
+OI Difference
 
-Validate trade risk.
+Distance Metrics
 
-Controls:
-
-Capital Allocation
-
-Position Size
-
-Daily Risk Limit
-
-Example:
-
-Capital = ₹100,000
-
-Daily Risk = ₹2,000
-
-Output:
-
-APPROVED
-
-REDUCE SIZE
-
-NO TRADE
-
----
-
-# 19. CURRENT DAILY EXECUTION FLOW
-
-Morning / Market Preparation
-
-1. historical_data.py
-
-Creates:
-
-* nifty_candles
-* option_chain_snapshots
-* feature snapshot
-
-2. features.py
-
-Creates:
+Outputs
 
 features.json
 
-3. feature_logger.py
+Automatically launches
 
-Stores:
+feature_logger.py
+
+---
+
+## feature_logger.py
+
+Reads
+
+features.json
+
+Writes
 
 features_log
 
-4. signal_engine.py
+inside
 
-Generates signal
+kait.db
 
-5. risk_engine.py
+Purpose
 
-Validates risk
-
-6. ai_analyst.py
-
-Explains market
-
-7. llamaAI_analyst.py
-
-Provides advanced reasoning
-
-8. unified_ml_engine.py
-
-Provides statistical prediction
+Build historical feature database.
 
 ---
 
-# 20. TRAINING PIPELINE FLOW
+## historical_data.py
 
-historical_data.py
-↓
-kait.db
-↓
-historical_feature.py
-↓
+Downloads
+
+Historical NIFTY OHLC
+
+Stores
+
+nifty_candles
+
+Purpose
+
+Historical market database.
+
+---
+
+## signal_engine.py
+
+Reads
+
+features.json
+
+Current Strategy
+
+Rule Based
+
+Checks
+
+PCR
+
+IV
+
+Theta
+
+DTE
+
+OI
+
+Max Pain
+
+Produces
+
+signal.json
+
+Possible Outputs
+
+BUY CALL
+
+BUY PUT
+
+NO TRADE
+
+Future
+
+Will become Strategy Ranking Engine.
+
+---
+
+## risk_engine.py
+
+Reads
+
+signal.json
+
+Checks
+
+Capital
+
+Risk
+
+Position Size
+
+Loss Limits
+
+Produces
+
+risk_result.json
+
+Purpose
+
+Trade validation.
+
+---
+
+## llamaAI_analyst.py
+
+Reads
+
+features.json
+
+signal.json
+
+risk_result.json
+
+Uses
+
+Local Llama Model
+
+Produces
+
+ai_analysis.json
+
+Provides
+
+Market Bias
+
+Trade Context
+
+Risk Commentary
+
+Plain English Explanation
+
+Educational Notes
+
+Future Role
+
+Independent AI Market Expert.
+
+---
+
+## historical_feature.py
+
+Reads
+
+Historical OHLC
+
+Calculates
+
+ATR
+
+RSI
+
+Returns
+
+Momentum
+
+Moving Averages
+
+Trend
+
+Volatility
+
+Produces
+
 historical_features.csv
-↓
-dataset_builder.py
-↓
+
+Purpose
+
+Historical ML features.
+
+---
+
+## dataset_builder.py
+
+Reads
+
+historical_features.csv
+
+Produces
+
 training_dataset.csv
-↓
-unified_ml_engine.py
-↓
+
+Purpose
+
+ML training dataset.
+
+---
+
+## unified_ml_engine.py
+
+Reads
+
+training_dataset.csv
+
+Trains
+
+Logistic Regression
+
+Random Forest
+
+Chooses
+
+Best Model
+
+Outputs
+
 kait_model.pkl
 
----
+Purpose
 
-# 21. DUAL INTELLIGENCE ARCHITECTURE
-
-KAIT currently operates with two independent intelligence engines.
-
-INTELLIGENCE ENGINE #1
-
-Unified ML Engine
-
-Answers:
-
-"What happened historically when conditions looked like this?"
-
-Strength:
-
-Statistical pattern recognition.
+Market prediction.
 
 ---
 
-INTELLIGENCE ENGINE #2
+## check_db.py
 
-Llama AI Analyst
+Database explorer.
 
-Answers:
+Displays
 
-"What does the current market structure imply?"
+All tables
 
-Strength:
+All rows
 
-Market reasoning and contextual analysis.
+Purpose
+
+Easy database inspection.
 
 ---
 
-Future Goal:
+# 7. CURRENT EXECUTION FLOWS
 
-Combine both engines.
+## A. Daily Analysis Flow
 
-ML Prediction
-+
-AI Reasoning
-+
-Signal Engine
-+
-Risk Engine
+Runs before entering the market.
+
+login.py
 
 ↓
 
-Final Trade Decision
+option_chain.py
+
+↓
+
+features.py
+
+↓
+
+feature_logger.py (automatic)
+
+↓
+
+signal_engine.py
+
+↓
+
+risk_engine.py
+
+↓
+
+llamaAI_analyst.py
+
+Purpose
+
+Generate today's market analysis.
 
 ---
 
-# 22. LONG TERM ROADMAP
+## B. Daily Data Collection Flow
+
+Runs after market close.
+
+login.py
+
+↓
+
+option_chain.py
+
+↓
+
+features.py
+
+↓
+
+feature_logger.py
+
+↓
+
+historical_data.py
+
+Purpose
+
+Grow KAIT's historical database.
+
+---
+
+## C. Weekend ML Preparation
+
+historical_feature.py
+
+↓
+
+dataset_builder.py
+
+Purpose
+
+Prepare fresh ML dataset.
+
+---
+
+## D. ML Training
+
+training_dataset.csv
+
+↓
+
+unified_ml_engine.py
+
+↓
+
+kait_model.pkl
+
+Purpose
+
+Update prediction model.
+
+---
+
+# 8. CURRENT LIMITATION
+
+Current ML only learns from OHLC derived indicators.
+
+Examples
+
+ATR
+
+RSI
+
+Momentum
+
+Returns
+
+Trend
+
+It does NOT yet learn from option chain.
+
+Therefore accuracy is limited.
+
+---
+
+# 9. FUTURE MACHINE LEARNING
+
+Eventually the dataset should include
+
+PCR
+
+IV
+
+IV Skew
+
+OI Difference
+
+OI Concentration
+
+Greeks
+
+Max Pain
+
+Support
+
+Resistance
+
+Distance Metrics
+
+Volume
+
+Historical Returns
+
+Momentum
+
+Volatility
+
+ATR
+
+RSI
+
+Trend
+
+This will significantly improve prediction quality.
+
+---
+
+# 10. FUTURE SIGNAL ENGINE
+
+Current
+
+One recommendation.
+
+Future
+
+Rank multiple strategies.
+
+Example
+
+Today's Best Trades
+
+1.
+
+BUY CALL
+
+Probability
+
+82%
+
+Risk
+
+Medium
+
+Reward
+
+High
+
+------------------
+
+2.
+
+Bull Call Spread
+
+Probability
+
+74%
+
+Risk
+
+Low
+
+Reward
+
+Medium
+
+------------------
+
+3.
+
+Iron Condor
+
+Probability
+
+61%
+
+Risk
+
+Low
+
+Reward
+
+Medium
+
+------------------
+
+4.
+
+BUY PUT
+
+Probability
+
+39%
+
+Not Recommended
+
+Instead of saying YES or NO, KAIT should explain WHY one strategy is superior.
+
+---
+
+# 11. TRADE PLANNER
+
+Every recommendation should include
+
+Entry
+
+Stop Loss
+
+Target 1
+
+Target 2
+
+Target 3
+
+Expected Holding Time
+
+Expected Move
+
+Probability
+
+Risk
+
+Reward
+
+Example
+
+BUY CALL
+
+Entry
+
+₹120
+
+Stop
+
+₹90
+
+Target 1
+
+₹155
+
+Target 2
+
+₹180
+
+Target 3
+
+₹205
+
+Exit
+
+Tomorrow 2:45 PM
+
+Probability
+
+81%
+
+---
+
+# 12. EXIT ENGINE
+
+KAIT should continuously monitor
+
+Theta
+
+IV
+
+OI Shift
+
+Price
+
+Greeks
+
+Support
+
+Resistance
+
+It should tell the user
+
+Hold
+
+Book Profit
+
+Trail Stop
+
+Exit Immediately
+
+Instead of fixed exits.
+
+---
+
+# 13. AI + ML DECISION ENGINE
+
+Final recommendation should combine
+
+Machine Learning
+
++
+
+LLM Reasoning
+
++
+
+Rule Engine
+
+Example
+
+ML
+
+BUY CALL
+
+72%
+
+LLM
+
+Bull Call Spread
+
+81%
+
+Rules
+
+BUY CALL
+
+75%
+
+Final Recommendation
+
+Bull Call Spread
+
+Confidence
+
+79%
+
+Reason
+
+Lower risk
+
+Better reward
+
+Theta advantage
+
+Support holding
+
+IV favourable
+
+---
+
+# 14. LONG TERM ROADMAP
 
 Phase 10
 
-Backtesting Framework
+Improve data collection
 
 Phase 11
 
-Paper Trading Engine
+Option Chain ML
 
 Phase 12
 
-Live Trade Execution
+Strategy Ranking
 
 Phase 13
 
-AI Trade Journal
+Trade Planner
 
 Phase 14
 
-Self-Learning Feedback Loop
+Exit Engine
 
 Phase 15
+
+Paper Trading
+
+Phase 16
+
+Backtesting
+
+Phase 17
+
+Performance Analytics
+
+Phase 18
+
+Self Learning AI
+
+Phase 19
 
 Autonomous Trading Assistant
 
 ---
 
-# 23. LONG TERM OBJECTIVE
+# 15. FINAL OBJECTIVE
 
-KAIT is evolving through four stages:
+KAIT should eventually behave like an experienced options trader.
 
-Stage 1
+Instead of answering
 
-Rule-Based Trading Assistant
+"Buy Call"
 
-↓
+KAIT should answer
 
-Stage 2
+The market is mildly bullish.
 
-Market Intelligence Platform
+Best strategy today is Bull Call Spread.
 
-↓
+Expected probability: 81%
 
-Stage 3
+Expected move: +180 points.
 
-Machine Learning Trading System
+Maximum risk: ₹2,450
 
-↓
+Expected reward: ₹5,200
 
-Stage 4
+Recommended exit before tomorrow 2:45 PM unless IV expands beyond 18%.
 
-AI-Powered Autonomous Trading Intelligence Platform
+Reason:
 
-The core asset remains:
+• Strong support at 24000
 
-kait.db
+• PCR improving
 
-Every feature snapshot collected increases the value of the system.
+• Max Pain shifting upward
 
-The database becomes smarter every day.
+• Positive OI build-up
 
-End of Document.
+• Low IV
 
+• ML agrees
 
-                  Zerodha
-                     │
-                     ▼
-              option_chain.py
-                     │
-                     ▼
-               option_chain.csv
-                     │
-                     ▼
-                 features.py
-                     │
-                     ▼
-               features.json
-                     │
-                     ▼
-            feature_logger.py
-                     │
-                     ▼
-                  kait.db
-                     │
-      ┌──────────────┼──────────────┐
-      ▼              ▼              ▼
- historical     training       analytics
-  features      dataset          tables
-      │              │
-      ▼              ▼
- historical_   unified_ml_
- feature.py     engine.py
-                     │
-                     ▼
-                kait_model.pkl
-                     │
-                     ▼
-             ML Prediction Layer
-                     │
-      ┌──────────────┼──────────────┐
-      ▼              ▼              ▼
- signal_engine   risk_engine   ai_analyst
-                     │
-                     ▼
-                Final Decision
+• LLM agrees
+
+This transforms KAIT from a signal generator into an AI-powered trading intelligence platform.
